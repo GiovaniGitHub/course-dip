@@ -22,7 +22,7 @@ def kmeans(data, k):
             d = sys.maxsize
 
             for j in range(len(centroids)):
-                temp_dist = core.distance(point, centroids[j])
+                temp_dist = np.linalg.norm(point - centroids[j])
                 d = min(d, temp_dist)
             dist.append(d)
 
