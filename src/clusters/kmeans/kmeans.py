@@ -1,4 +1,3 @@
-from utils import distance
 import numpy as np
 import sys
 
@@ -6,7 +5,7 @@ def get_labels(data, centroids):
     labels = []
     for d in data:
         labels.append(
-            np.argmin([distance(d, centroid) for centroid in centroids])
+            np.argmin([np.linalg.norm(d - centroid) for centroid in centroids])
         )
     return labels
 
@@ -23,7 +22,7 @@ def kmeans(data, k):
             d = sys.maxsize
 
             for j in range(len(centroids)):
-                temp_dist = distance(point, centroids[j])
+                temp_dist = core.distance(point, centroids[j])
                 d = min(d, temp_dist)
             dist.append(d)
 
