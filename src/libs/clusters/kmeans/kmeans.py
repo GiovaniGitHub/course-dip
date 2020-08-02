@@ -23,7 +23,7 @@ def kmeans(data, k):
 
             for j in range(len(centroids)):
                 temp_dist = np.linalg.norm(point - centroids[j])
-                d = min(d, temp_dist)
+                d = min(d, temp_dist )
             dist.append(d)
 
         dist = np.array(dist)

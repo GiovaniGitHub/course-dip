@@ -3,7 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import sys
 
-from clusters.kmeans.kmeans import kmeans, get_labels
+from kmeans.kmeans import kmeans, get_labels
 
 mean_01 = np.array([0.0, 0.0])
 cov_01 = np.array([[1, 0.3], [0.3, 1]])
