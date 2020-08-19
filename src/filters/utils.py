@@ -1,49 +1,59 @@
 import numpy as np
+from matplotlib import pyplot as plt
 
+def mult_plot(imgs, labels):
+    fig, axes = plt.subplots(figsize=(16, 16), nrows=1, ncols=len(labels))
+    fig.tight_layout(pad=2.0)
 
-def noisy(noise_typ, image):
+    for i in range(len(axes)):
+        axes[i].imshow(imgs[i], cmap = 'gray')
+        axes[i].set(title=labels[i])
+    plt.show()
 
-    if noise_typ == "gauss":
-        mean = 0
-        var = 0.008
-        sigma = var**0.5
-        gauss = np.random.normal(mean,sigma,image.shape)
-        gauss = gauss.reshape(image.shape)
-        noisy = image + gauss
-        return noisy
-    elif noise_typ == "s&p":
+def gaussian_noisy(image, mean=None, sigma=None):
+    if not mean:
+        mean = image.mean()
 
-        s_vs_p = 0.5
-        amount = 0.004
-        out = np.copy(image)
-        # Salt mode
-        num_salt = np.ceil(amount * image.size * s_vs_p)
-        coords = [np.random.randint(0, i - 1, int(num_salt)) for i in image.shape]
-        out[coords] = 1
-        # Pepper mode
-        num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
-        coords = [np.random.randint(0, i - 1, int(num_pepper)) for i in image.shape]
-        out[coords] = 0
+    if not sigma:
+        sigma = image.std()
 
-        return out
+    gauss = np.random.normal(mean,sigma,image.shape)
+    gauss = gauss.reshape(image.shape)
+    noisy = image + gauss
 
-    elif noise_typ == "poisson":
-        vals = len(np.unique(image))
-        vals = 2 ** np.ceil(np.log2(vals))
-        noisy = np.random.poisson(image * vals) / float(vals)
-        return noisy
+    return noisy
 
-    elif noise_typ =="speckle":
-        if len(image.shape) == 2:
-            gauss = image.std()*np.random.randn(image.shape[0],image.shape[1]) + image.mean()
-            gauss = gauss.reshape(image.shape[0],image.shape[1])
-            noisy = image + image * gauss
-            return noisy
-        elif len(image.shape) == 3:
-            gauss = image.std()*np.random.randn(image.shape[0],image.shape[1],image.shape[2]) + image.mean()
-            gauss = gauss.reshape(image.shape[0],image.shape[1],image.shape[2])
-            noisy = image + image * gauss
-            return noisy
+def salt_and_pepper_noisy(image, amount = 0.004):
+
+    out = np.copy(image)
+    # Salt mode
+    num_salt = np.ceil(amount * image.size * 0.5)
+    coords = [np.random.randint(0, i - 1, int(num_salt)) for i in image.shape]
+    out[coords] = 1
+    # Pepper mode
+    num_pepper = np.ceil(amount* image.size * (0.5))
+    coords = [np.random.randint(0, i - 1, int(num_pepper)) for i in image.shape]
+    out[coords] = 0
+
+    return out
+
+def poisson_noisy(image):
+    vals = 2 ** np.ceil(np.log2(len(np.unique(image))))
+    noisy = np.random.poisson(image * vals) / float(vals)
+
+    return noisy + image
+
+def speckle_noisy(image):
+    if len(image.shape) == 2:
+        gauss = image.std()*np.random.randn(image.shape[0],image.shape[1]) + image.mean()
+        gauss = gauss.reshape(image.shape[0],image.shape[1])
+
+    elif len(image.shape) == 3:
+        gauss = image.std()*np.random.randn(image.shape[0],image.shape[1],image.shape[2]) + image.mean()
+        gauss = gauss.reshape(image.shape[0],image.shape[1],image.shape[2])
+
+    noisy = image + image * gauss
+    return noisy
 
 def convolve(image, kernel):
     output = np.zeros_like(image)

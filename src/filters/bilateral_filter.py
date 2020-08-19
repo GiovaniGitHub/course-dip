@@ -9,7 +9,7 @@ def bilateral_filter( img_in, sigma_spatial, sigma_color, reg_constant=1e-8, nor
     if not sigma_color:
         sigma_color = img_in.std()
 
-    gaussian = lambda r2, sigma: (np.exp( -0.5*r2/sigma**2 ))
+    gaussian = lambda r, s: (np.exp( -0.5*r/s**2 )*3)
     win_width = int( 3*sigma_spatial+1 )
     wgt_sum = np.ones( img_in.shape )*reg_constant
     result  = img_in*reg_constant

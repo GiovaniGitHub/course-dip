@@ -2,46 +2,41 @@ from matplotlib import pyplot as plt
 import numpy as np
 from butterworth_filter import butterworth
 from bilateral_filter import bilateral_filter
+from wavelet_filter import wavelet_threshold
+from richardson_lucy import richardson_lucy
 from matplotlib import pyplot as plt
+from utils import *
+from scipy.signal import convolve2d as conv2
 
+def normalize_image(image):
+    return (255*(image - image.min())/(image.max() - image.min())).astype(np.uint8)
 
-def normalize_image(img):
-    return (255*(img - img.min())/(img.max() - img.min())).astype(np.uint8)
-
-def gaussian_noise(image):
-    pass
-
-def salt_and_pepper(image):
-    s_vs_p = 0.5
-    amount = 0.016
-    out = np.copy(image)
-    # Salt mode
-    num_salt = np.ceil(amount * image.size * s_vs_p)
-    coords = [np.random.randint(0, i - 1, int(num_salt)) for i in image.shape]
-    out[tuple(coords)] = 1
-    # Pepper mode
-    num_pepper = np.ceil(amount* image.size * (1. - s_vs_p))
-    coords = [np.random.randint(0, i - 1, int(num_pepper)) for i in image.shape]
-    out[tuple(coords)] = 0
-
-    return out
-
-def test_butterworth(img):
-    img_filtered = butterworth(img)
-    img_filtered = normalize_image(img_filtered)
-    plt.imshow(np.concatenate((img, img_filtered),axis=1))
+def test_butterworth(image):
+    image_noisy = noisy('gaussian',)
+    image_filtered = butterworth(image)
+    image_filtered = normalize_image(image_filtered)
+    plt.imshow(np.concatenate((image, image_filtered),axis=1))
     plt.show()
 
-def test_bilateral_filter(img, sigma_s, sigma_v):
-    img_filtered = bilateral_filter(img, sigma_s, sigma_v)
-    img_filtered = normalize_image(img_filtered)
-    plt.imshow(np.concatenate((img, img_filtered),axis=1))
+def test_bilateral_filter(image, sigma_s, sigma_v):
+    image_filtered = bilateral_filter(image, sigma_s, sigma_v)
+    image_filtered = normalize_image(image_filtered)
+    plt.imshow(np.concatenate((image, image_filtered),axis=1))
     plt.show()
 
+
+def test_richardson_lucy(image):
+    kernel = np.ones((5, 5)) / 25
+
+    image_noisy = image.copy()
+    image_noisy = convolve(image, kernel)
+    image_noisy += (np.random.poisson(lam=25, size=image.shape) - 10) / 255.
+
+    image_filtered = richardson_lucy(image_noisy, kernel, iterations = 30)
+
+    mult_plot([image, image_noisy, image_filtered], ['original','noisy','filtered'])
 
 if __name__ == "__main__":
-    img = plt.imread('../../slides/lena_gray.png')
-    img_noised = salt_and_pepper(img)
-    img_filtered = bilateral_filter(img_noised, 10, 0.1, normalize = True)
-    plt.imshow(img_filtered, cmap='gray')
-    plt.show()
+    image = plt.imread('../../slides/lena_gray.png')
+
+    test_richardson_lucy(image)
