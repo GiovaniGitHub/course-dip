@@ -1,6 +1,6 @@
 # Codes of DIP course
 ## clusters
-###### Kmeans
+##### Kmeans
 
 ## filters
 ##### Gaussian Blur
