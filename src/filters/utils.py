@@ -65,9 +65,8 @@ def convolve(image, kernel):
         w_y = int((kernel.shape[1])/2)
 
     padded_x = image.shape[0] + (kernel.shape[0] - 1)
-    padded_y =  image.shape[1] +  (kernel.shape[1] - 1)
+    padded_y =  image.shape[1] + (kernel.shape[1] - 1)
     image_padded = np.zeros((padded_x,padded_y))
-
 
     image_padded[w_x:-w_x, w_y:-w_y] = image
     for x in range(image.shape[0]):

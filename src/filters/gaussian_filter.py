@@ -1,5 +1,5 @@
 import numpy as np
-from utils import convolve
+from utils import convolve_fft
 
 def gaussian_kernel(n,mean=0,sigma=1):
     if n % 2 == 0:
@@ -17,6 +17,6 @@ def gaussian_kernel(n,mean=0,sigma=1):
 def gaussian_filter(img, n=3, sd=1):
     kernel = gaussian_kernel(n=n,mean=0,sigma=sd)
 
-    img_blur = convolve(img,kernel)
+    img_blur = convolve_fft(img,kernel)
 
     return img_blur

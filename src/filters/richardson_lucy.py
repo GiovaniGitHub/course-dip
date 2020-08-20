@@ -1,6 +1,6 @@
 from utils import convolve
 import numpy as np
-
+from scipy.signal import convolve2d
 def richardson_lucy(image, kernel, iterations=50):
 
     image = image.astype(np.float)
@@ -9,10 +9,9 @@ def richardson_lucy(image, kernel, iterations=50):
     kernel_mirror = np.flip(kernel)
 
     for i in range(iterations):
-        print(f'iteration: {i}')
-        conv = convolve(im_deconv, kernel)
+        conv = convolve2d(im_deconv, kernel, mode='same')
         relative_blur = image / conv
-        im_deconv *= convolve(relative_blur, kernel_mirror)
+        im_deconv *= convolve2d(relative_blur, kernel_mirror, mode='same')
 
     im_deconv[im_deconv > 1] = 1
     im_deconv[im_deconv < -1] = -1
