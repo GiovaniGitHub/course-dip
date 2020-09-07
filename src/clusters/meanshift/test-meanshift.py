@@ -1,8 +1,6 @@
 import numpy as np
-from sklearn.datasets import *
 from meanshift import meanshift
 import matplotlib.pyplot as plt
-import matplotlib.pylab as pylab
 from sklearn.preprocessing import StandardScaler
 
 scl = StandardScaler()
