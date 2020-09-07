@@ -1,9 +1,11 @@
 import numpy as np
-import pandas as pd
+from sklearn.datasets import *
+from meanshift import meanshift
 import matplotlib.pyplot as plt
-import sys
+import matplotlib.pylab as pylab
+from sklearn.preprocessing import StandardScaler
 
-from kmeans import kmeans, get_labels
+scl = StandardScaler()
 
 mean_01 = np.array([0.0, 0.0])
 cov_01 = np.array([[1, 0.3], [0.3, 1]])
@@ -24,9 +26,8 @@ dist_04 = np.random.multivariate_normal(mean_04, cov_01, 100)
 data = np.vstack((dist_01, dist_02, dist_03, dist_04))
 np.random.shuffle(data)
 
-centroids = kmeans(data, 4)
-labels = get_labels(data, centroids)
+data_normalized = scl.fit_transform(data)
 
+labels = meanshift(data_normalized)
 plt.scatter(data[:,0], data[:,1], c = labels)
-
 plt.show()
