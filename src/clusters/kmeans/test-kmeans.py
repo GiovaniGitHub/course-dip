@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import sys
-
 from kmeans import kmeans, get_labels
 
 mean_01 = np.array([0.0, 0.0])
